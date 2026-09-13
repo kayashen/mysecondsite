@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>個人簡介 & 作品集 | Personal Portfolio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#1e1b4b',
+                        },
+                        darkBg: '#0b0f19',
+                        darkCard: '#111827',
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', '"Noto Sans TC"', 'sans-serif'],
+                    },
+                    animation: {
+                        'spin-slow': 'spin 12s linear infinite',
+                        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+                        'float': 'float 4s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%, 100%': { opacity: 0.6, transform: 'scale(1)' },
+                            '50%': { opacity: 1, transform: 'scale(1.05)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0b0f19;
+            color: #f3f4f6;
+            font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Styles */
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px -10px rgba(99, 102, 241, 0.2);
+        }
+
+        /* Audio Equalizer Bars Animation */
+        .eq-bar {
+            width: 3px;
+            background-color: #818cf8;
+            border-radius: 2px;
+            animation: eqAnimation 1s ease-in-out infinite alternate;
+        }
+        .eq-bar:nth-child(1) { height: 12px; animation-delay: 0.1s; }
+        .eq-bar:nth-child(2) { height: 18px; animation-delay: 0.3s; }
+        .eq-bar:nth-child(3) { height: 8px;  animation-delay: 0.2s; }
+        .eq-bar:nth-child(4) { height: 15px; animation-delay: 0.4s; }
+
+        @keyframes eqAnimation {
+            0% { transform: scaleY(0.3); }
+            100% { transform: scaleY(1.1); }
+        }
+
+        .paused .eq-bar {
+            animation-play-state: paused;
+            height: 4px !important;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0f19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4f46e5;
+        }
+    </style>
+</head>
+<body class="selection:bg-brand-500 selection:text-white">
+
+    <!-- Background Ambient Glows -->
+    <div class="fixed top-0 left-1/4 w-[500px] h-[500px] bg-indigo-600/15 rounded-full blur-[140px] pointer-events-none -z-10"></div>
+    <div class="fixed bottom-10 right-10 w-[400px] h-[400px] bg-purple-600/15 rounded-full blur-[130px] pointer-events-none -z-10"></div>
+
+    <!-- Navigation Header -->
+    <header class="fixed top-0 left-0 right-0 z-40 glass-panel border-b border-white/10">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="#" class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-brand-500 inline-block animate-pulse"></span>
+                <span>Alex<span class="text-brand-500">.Design</span></span>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
+                <a href="#about" class="hover:text-brand-500 transition-colors">關於我</a>
+                <a href="#skills" class="hover:text-brand-500 transition-colors">專業技能</a>
+                <a href="#portfolio" class="hover:text-brand-500 transition-colors">精選作品</a>
+                <a href="#contact" class="hover:text-brand-500 transition-colors">聯絡方式</a>
+            </nav>
+
+            <div class="flex items-center gap-3">
+                <!-- Audio Quick Toggle Pill -->
+                <button id="navAudioBtn" onclick="togglePlay()" class="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-white/5 hover:bg-white/10 border border-white/10 transition-all">
+                    <i id="navAudioIcon" class="fas fa-music text-brand-500"></i>
+                    <span id="navAudioText" class="hidden sm:inline text-gray-300">背景音樂</span>
+                </button>
+
+                <!-- Hire Me / Contact CTA -->
+                <a href="#contact" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs sm:text-sm font-semibold transition-all shadow-lg shadow-brand-600/20">
+                    合作諮詢
+                </a>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="md:hidden p-2 text-gray-400 hover:text-white" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Modal -->
+        <div id="mobileMenu" class="hidden md:hidden glass-panel border-t border-white/10 px-4 py-6 space-y-4">
+            <a href="#about" onclick="toggleMobileMenu()" class="block text-gray-300 hover:text-white py-1">關於我</a>
+            <a href="#skills" onclick="toggleMobileMenu()" class="block text-gray-300 hover:text-white py-1">專業技能</a>
+            <a href="#portfolio" onclick="toggleMobileMenu()" class="block text-gray-300 hover:text-white py-1">精選作品</a>
+            <a href="#contact" onclick="toggleMobileMenu()" class="block text-gray-300 hover:text-white py-1">聯絡方式</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="min-h-screen pt-28 pb-16 flex items-center justify-center relative overflow-hidden">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Hero Left Content -->
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left order-2 lg:order-1">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-500 text-xs font-semibold tracking-wide">
+                        <i class="fas fa-sparkles"></i> 歡迎來到我的個人數位空間
+                    </div>
+
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
+                        你好，我是 <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 via-purple-400 to-pink-500">Alex</span>
+                    </h1>
+
+                    <p class="text-lg sm:text-xl text-gray-400 max-w-2xl font-light leading-relaxed">
+                        熱衷於創建流暢的使用者體驗與創新數位產品。具備前端開發與 UI/UX 設計經驗，致力於將創意轉化為現實。
+                    </p>
+
+                    <!-- Stat Badges -->
+                    <div class="pt-2 grid grid-cols-3 gap-4 max-w-md mx-auto lg:mx-0">
+                        <div class="glass-panel p-3.5 rounded-2xl text-center">
+                            <div class="text-2xl font-bold text-white">5+</div>
+                            <div class="text-xs text-gray-400 mt-0.5">年實務經驗</div>
+                        </div>
+                        <div class="glass-panel p-3.5 rounded-2xl text-center">
+                            <div class="text-2xl font-bold text-white">40+</div>
+                            <div class="text-xs text-gray-400 mt-0.5">完成專案</div>
+                        </div>
+                        <div class="glass-panel p-3.5 rounded-2xl text-center">
+                            <div class="text-2xl font-bold text-white">100%</div>
+                            <div class="text-xs text-gray-400 mt-0.5">熱情滿載</div>
+                        </div>
+                    </div>
+
+                    <!-- Call to Action Buttons -->
+                    <div class="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-4">
+                        <a href="#portfolio" class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-brand-600 to-purple-600 hover:from-brand-500 hover:to-purple-500 text-white font-semibold transition-all shadow-lg shadow-brand-500/25 flex items-center gap-2">
+                            <span>探索作品集</span>
+                            <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                        
+                        <button onclick="togglePlay()" class="px-6 py-3.5 rounded-2xl glass-panel hover:bg-white/10 text-white font-medium transition-all flex items-center gap-2.5">
+                            <i id="heroMusicIcon" class="fas fa-play text-brand-500"></i>
+                            <span id="heroMusicBtnText">播放背景音樂</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Hero Right Avatar Photo -->
+                <div class="lg:col-span-5 flex justify-center order-1 lg:order-2">
+                    <div class="relative group">
+                        <!-- Glowing Glow Background Effect -->
+                        <div class="absolute -inset-1.5 bg-gradient-to-r from-brand-500 to-purple-600 rounded-[2.5rem] blur-xl opacity-70 group-hover:opacity-100 transition duration-1000 animate-pulse-glow"></div>
+                        
+                        <!-- Main Image Frame Container -->
+                        <div class="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96 rounded-[2.2rem] overflow-hidden glass-panel p-2 shadow-2xl border border-white/20">
+                            <img 
+                                src="https://img.ai365.fans/cdn-cgi/image/width=1400,quality=90,format=auto/artworks/7cc0a7ea-ea1e-4bb0-9b4e-823b55b1193c/5urjvqpnbvb.png" 
+                                alt="Alex 個人大頭照" 
+                                class="w-full h-full object-cover rounded-[1.8rem] transition-transform duration-700 group-hover:scale-105"
+                                onerror="this.onerror=null; this.src='https://placehold.co/600x600/1e1b4b/ffffff?text=Avatar';"
+                            >
+                            
+                            <!-- Floating Status Badge -->
+                            <div class="absolute bottom-4 left-4 right-4 glass-panel py-2.5 px-4 rounded-xl flex items-center justify-between border border-white/10">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                                    <span class="text-xs font-medium text-gray-200">接受全新專案合作</span>
+                                </div>
+                                <i class="fas fa-check-circle text-emerald-400 text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- About Me Section -->
+    <section id="about" class="py-20 relative">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-brand-500 mb-2">ABOUT ME</h2>
+                <p class="text-3xl font-extrabold text-white sm:text-4xl">關於我與我的理念</p>
+                <p class="text-gray-400 mt-3">兼具美感與實用性，專注打造流暢互動的網頁介面</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="glass-card p-8 rounded-3xl relative overflow-hidden">
+                    <div class="w-14 h-14 rounded-2xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-500 text-2xl mb-6">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">現代化 Web 開發</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        精通 HTML5, CSS3, JavaScript 與 Tailwind CSS，能打造高流暢度、符合現代審美的響應式（RWD）網頁應用。
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="glass-card p-8 rounded-3xl relative overflow-hidden">
+                    <div class="w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 text-2xl mb-6">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">UI/UX 設計感</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        重視使用者流程與介面細節，擅長運用微動畫、配色學與層次佈局，提升使用者留存與互動體驗。
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="glass-card p-8 rounded-3xl relative overflow-hidden">
+                    <div class="w-14 h-14 rounded-2xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-400 text-2xl mb-6">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">效能與優化</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        注重網頁載入速度與跨瀏覽器相容性，秉持潔淨程式碼思維，確保網站擁有優異的 SEO 與流暢度。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-20 glass-panel border-y border-white/5 relative">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-brand-500 mb-2">MY SKILLS</h2>
+                <p class="text-3xl font-extrabold text-white sm:text-4xl">核心專業技能</p>
+                <p class="text-gray-400 mt-3">不斷精進的技術棧與設計工具</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Skill Category 1 -->
+                <div class="glass-card p-6 sm:p-8 rounded-3xl space-y-6">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-3">
+                        <i class="fas fa-code text-brand-500"></i> 前端開發技能
+                    </h3>
+
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1.5">
+                                <span class="text-gray-300 font-medium">HTML5 / CSS3 / RWD</span>
+                                <span class="text-brand-500 font-semibold">95%</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-gray-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-brand-600 to-indigo-400 rounded-full w-[95%]"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-sm mb-1.5">
+                                <span class="text-gray-300 font-medium">Tailwind CSS / Bootstrap</span>
+                                <span class="text-brand-500 font-semibold">90%</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-gray-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-brand-600 to-indigo-400 rounded-full w-[90%]"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-sm mb-1.5">
+                                <span class="text-gray-300 font-medium">JavaScript (ES6+) / React</span>
+                                <span class="text-brand-500 font-semibold">85%</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-gray-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-brand-600 to-indigo-400 rounded-full w-[85%]"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skill Category 2 -->
+                <div class="glass-card p-6 sm:p-8 rounded-3xl space-y-6">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-3">
+                        <i class="fas fa-bezier-curve text-purple-400"></i> UI/UX & 工具軟體
+                    </h3>
+
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1.5">
+                                <span class="text-gray-300 font-medium">Figma / Web UI Design</span>
+                                <span class="text-purple-400 font-semibold">88%</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-gray-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-purple-600 to-pink-500 rounded-full w-[88%]"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-sm mb-1.5">
+                                <span class="text-gray-300 font-medium">Git / GitHub 版本控制</span>
+                                <span class="text-purple-400 font-semibold">85%</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-gray-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-purple-600 to-pink-500 rounded-full w-[85%]"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-sm mb-1.5">
+                                <span class="text-gray-300 font-medium">多媒體整合 / 音訊剪輯</span>
+                                <span class="text-purple-400 font-semibold">80%</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-gray-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-purple-600 to-pink-500 rounded-full w-[80%]"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="py-20 relative">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-brand-500 mb-2">PORTFOLIO</h2>
+                <p class="text-3xl font-extrabold text-white sm:text-4xl">精選作品展示</p>
+                <p class="text-gray-400 mt-3">探索我最近完成的網頁專案與個人作品</p>
+            </div>
+
+            <!-- Portfolio Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Project Item 1 -->
+                <div class="glass-card rounded-3xl overflow-hidden group">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://placehold.co/600x400/111827/6366f1?text=SaaS+Dashboard" alt="專案預覽" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-darkCard to-transparent opacity-60"></div>
+                        <span class="absolute top-4 left-4 px-3 py-1 bg-brand-600/80 backdrop-blur-md text-white text-xs font-semibold rounded-full">Web App</span>
+                    </div>
+                    <div class="p-6 space-y-3">
+                        <h3 class="text-lg font-bold text-white group-hover:text-brand-500 transition-colors">SaaS 智慧數據控制台</h3>
+                        <p class="text-gray-400 text-xs leading-relaxed">提供實時圖表分析、使用者數據監控與優雅的 Dark Mode 介面設計。</p>
+                        <div class="flex items-center gap-2 pt-2 text-xs font-medium text-brand-400">
+                            <span>Tailwind CSS</span> • <span>React</span> • <span>Chart.js</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Item 2 -->
+                <div class="glass-card rounded-3xl overflow-hidden group">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://placehold.co/600x400/1e1b4b/a855f7?text=E-Commerce+Store" alt="專案預覽" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-darkCard to-transparent opacity-60"></div>
+                        <span class="absolute top-4 left-4 px-3 py-1 bg-purple-600/80 backdrop-blur-md text-white text-xs font-semibold rounded-full">E-Commerce</span>
+                    </div>
+                    <div class="p-6 space-y-3">
+                        <h3 class="text-lg font-bold text-white group-hover:text-purple-400 transition-colors">品牌電商響應式購物網</h3>
+                        <p class="text-gray-400 text-xs leading-relaxed">完整兼顧手機端流暢下單流程，具備篩選、購物車與即時結帳互動。</p>
+                        <div class="flex items-center gap-2 pt-2 text-xs font-medium text-purple-400">
+                            <span>HTML5/CSS3</span> • <span>JavaScript</span> • <span>RWD</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Item 3 -->
+                <div class="glass-card rounded-3xl overflow-hidden group">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://placehold.co/600x400/064e3b/10b981?text=Audio+Player+App" alt="專案預覽" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-darkCard to-transparent opacity-60"></div>
+                        <span class="absolute top-4 left-4 px-3 py-1 bg-emerald-600/80 backdrop-blur-md text-white text-xs font-semibold rounded-full">Audio & UX</span>
+                    </div>
+                    <div class="p-6 space-y-3">
+                        <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors">線上音樂放鬆播放器</h3>
+                        <p class="text-gray-400 text-xs leading-relaxed">結合氛圍背景音效與動態視覺波形效果，打造深度專注體驗。</p>
+                        <div class="flex items-center gap-2 pt-2 text-xs font-medium text-emerald-400">
+                            <span>Web Audio API</span> • <span>Tailwind</span> • <span>JS</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 glass-panel border-t border-white/5 relative">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                
+                <!-- Contact Info Left -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div>
+                        <h2 class="text-xs font-bold uppercase tracking-widest text-brand-500 mb-2">CONTACT</h2>
+                        <p class="text-3xl font-extrabold text-white">開啟合作對話</p>
+                        <p class="text-gray-400 text-sm mt-3 leading-relaxed">
+                            不論您是有全新的專案想法、網頁設計需求，或是想聊聊音樂與技術，都非常歡迎隨時與我聯繫！
+                        </p>
+                    </div>
+
+                    <div class="space-y-4 pt-2">
+                        <div class="flex items-center gap-4 glass-card p-4 rounded-2xl">
+                            <div class="w-12 h-12 rounded-xl bg-brand-500/10 flex items-center justify-center text-brand-500 text-lg">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-gray-400">Email 信箱</div>
+                                <div class="text-sm font-semibold text-white">alex.design@example.com</div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 glass-card p-4 rounded-2xl">
+                            <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 text-lg">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-gray-400">主要工作地點</div>
+                                <div class="text-sm font-semibold text-white">台灣，台北 (支持遠端合作)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Icons Bar -->
+                    <div class="pt-4 flex items-center gap-3">
+                        <a href="#" class="w-10 h-10 rounded-xl glass-panel hover:bg-brand-600 flex items-center justify-center text-gray-300 hover:text-white transition-all">
+                            <i class="fab font-brands fa-github"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-xl glass-panel hover:bg-brand-600 flex items-center justify-center text-gray-300 hover:text-white transition-all">
+                            <i class="fab font-brands fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-xl glass-panel hover:bg-brand-600 flex items-center justify-center text-gray-300 hover:text-white transition-all">
+                            <i class="fab font-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-xl glass-panel hover:bg-brand-600 flex items-center justify-center text-gray-300 hover:text-white transition-all">
+                            <i class="fab font-brands fa-line"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Contact Form Right -->
+                <div class="lg:col-span-7">
+                    <form id="contactForm" onsubmit="handleFormSubmit(event)" class="glass-card p-6 sm:p-8 rounded-3xl space-y-5">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-300 mb-2">您的姓名</label>
+                                <input type="text" required placeholder="例如：王小明" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 transition-colors text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-300 mb-2">電子郵件</label>
+                                <input type="email" required placeholder="name@example.com" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 transition-colors text-sm">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-gray-300 mb-2">主題</label>
+                            <input type="text" required placeholder="專案合作 / 諮詢" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 transition-colors text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-gray-300 mb-2">訊息內容</label>
+                            <textarea rows="4" required placeholder="請簡述您的需求或想法..." class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 transition-colors text-sm resize-none"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 hover:from-brand-500 hover:to-purple-500 text-white font-semibold transition-all shadow-lg shadow-brand-500/20 text-sm flex items-center justify-center gap-2">
+                            <i class="fas fa-paper-plane text-xs"></i> Send Message
+                        </button>
+                        
+                        <!-- Form Success Notice (Hidden by default) -->
+                        <div id="formNotice" class="hidden p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs text-center">
+                            <i class="fas fa-circle-check mr-1"></i> 訊息已送出，我會盡快與您聯繫！
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating Audio Control Widget (Bottom Right) -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <div id="audioWidget" class="glass-panel p-3.5 rounded-2xl shadow-2xl border border-white/15 flex items-center gap-3 transition-all duration-300 hover:scale-105">
+            
+            <!-- Rotating Disc Effect -->
+            <div id="discContainer" class="relative w-11 h-11 rounded-full bg-gradient-to-tr from-purple-900 to-brand-900 border border-white/20 flex items-center justify-center overflow-hidden">
+                <!-- Disc Image / Icon -->
+                <i class="fas fa-compact-disc text-2xl text-brand-400 animate-spin-slow opacity-90" id="discIcon"></i>
+                <div class="absolute w-3 h-3 bg-darkBg rounded-full border border-white/20"></div>
+            </div>
+
+            <!-- Track Info & Equalizer Visualizer -->
+            <div class="flex-1 min-w-[110px] max-w-[150px]">
+                <div class="text-xs font-bold text-white truncate" id="trackTitle"> Chill Lo-Fi Vibe </div>
+                <div class="text-[10px] text-gray-400 truncate mt-0.5 flex items-center gap-1.5">
+                    <span id="trackStatus">已暫停</span>
+                    <!-- CSS Animated Equalizer -->
+                    <div id="eqContainer" class="flex items-end gap-0.5 paused">
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audio Controls -->
+            <div class="flex items-center gap-2">
+                <button onclick="togglePlay()" class="w-9 h-9 rounded-xl bg-brand-600 hover:bg-brand-500 text-white flex items-center justify-center text-xs shadow-md transition-all">
+                    <i id="widgetPlayIcon" class="fas fa-play"></i>
+                </button>
+                <button onclick="openMusicModal()" title="更換音樂鏈結" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white flex items-center justify-center text-xs transition-colors">
+                    <i class="fas fa-sliders-h"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Music Settings Modal (Allows easy URL testing/changing) -->
+    <div id="musicModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="glass-panel max-w-md w-full p-6 rounded-3xl border border-white/15 space-y-4 relative">
+            <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <i class="fas fa-music text-brand-500"></i> 背景音樂設定
+                </h3>
+                <button onclick="closeMusicModal()" class="text-gray-400 hover:text-white text-lg">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-gray-300 leading-relaxed">
+                您可以即時貼上音樂 MP3 網址進行測試，或是事後在 HTML 中直接修改 <code class="bg-white/10 px-1 rounded text-brand-300">&lt;audio&gt;</code> 標籤的 src 鏈結。
+            </p>
+
+            <div>
+                <label class="block text-xs font-medium text-gray-400 mb-1">音樂 URL 鏈結：</label>
+                <input id="musicUrlInput" type="url" class="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-brand-500" placeholder="https://..." value="https://img.ai365.fans/artworks/b0af181e-9656-46e6-9b46-5307b94dffe8/qbhthtkkdsb.mp3">
+            </div>
+
+            <div class="flex items-center justify-between text-xs">
+                <span class="text-gray-400">音量控制：</span>
+                <input id="volumeRange" type="range" min="0" max="1" step="0.05" value="0.5" oninput="changeVolume(this.value)" class="w-32 accent-brand-500">
+            </div>
+
+            <div class="pt-2 flex justify-end gap-2">
+                <button onclick="closeMusicModal()" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-gray-300 text-xs font-medium">關閉</button>
+                <button onclick="applyNewMusicUrl()" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold">套用並播放</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HTML5 Audio Element -->
+    <!-- Note: You can easily replace the 'src' below with your own MP3 link! -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="https://img.ai365.fans/artworks/b0af181e-9656-46e6-9b46-5307b94dffe8/qbhthtkkdsb.mp3" type="audio/mpeg">
+        您的瀏覽器不支援 Audio 標籤。
+    </audio>
+
+    <!-- JavaScript Logic -->
+    <script>
+        const audio = document.getElementById('bgMusic');
+        const widgetPlayIcon = document.getElementById('widgetPlayIcon');
+        const heroMusicIcon = document.getElementById('heroMusicIcon');
+        const heroMusicBtnText = document.getElementById('heroMusicBtnText');
+        const navAudioIcon = document.getElementById('navAudioIcon');
+        const trackStatus = document.getElementById('trackStatus');
+        const eqContainer = document.getElementById('eqContainer');
+        const discIcon = document.getElementById('discIcon');
+
+        // Set initial volume
+        audio.volume = 0.5;
+
+        // Toggle Play / Pause state
+        function togglePlay() {
+            if (audio.paused) {
+                audio.play().then(() => {
+                    updateAudioUI(true);
+                }).catch(err => {
+                    console.log("Autoplay prevented or network error:", err);
+                    openMusicModal();
+                });
+            } else {
+                audio.pause();
+                updateAudioUI(false);
+            }
+        }
+
+        // Update UI status for all music buttons & visualizer
+        function updateAudioUI(isPlaying) {
+            if (isPlaying) {
+                widgetPlayIcon.className = "fas fa-pause";
+                heroMusicIcon.className = "fas fa-pause text-brand-500";
+                heroMusicBtnText.innerText = "暫停背景音樂";
+                navAudioIcon.className = "fas fa-volume-high text-brand-500 animate-pulse";
+                trackStatus.innerText = "播放中...";
+                trackStatus.className = "text-brand-400 font-medium";
+                eqContainer.classList.remove('paused');
+                discIcon.classList.add('animate-spin-slow');
+            } else {
+                widgetPlayIcon.className = "fas fa-play";
+                heroMusicIcon.className = "fas fa-play text-brand-500";
+                heroMusicBtnText.innerText = "播放背景音樂";
+                navAudioIcon.className = "fas fa-music text-brand-500";
+                trackStatus.innerText = "已暫停";
+                trackStatus.className = "text-gray-400";
+                eqContainer.classList.add('paused');
+                discIcon.classList.remove('animate-spin-slow');
+            }
+        }
+
+        // Change Volume
+        function changeVolume(val) {
+            audio.volume = val;
+        }
+
+        // Music Settings Modal Functions
+        function openMusicModal() {
+            document.getElementById('musicModal').classList.remove('hidden');
+            document.getElementById('musicModal').classList.add('flex');
+        }
+
+        function closeMusicModal() {
+            document.getElementById('musicModal').classList.add('hidden');
+            document.getElementById('musicModal').classList.remove('flex');
+        }
+
+        function applyNewMusicUrl() {
+            const newUrl = document.getElementById('musicUrlInput').value.trim();
+            if (newUrl) {
+                audio.src = newUrl;
+                audio.play().then(() => {
+                    updateAudioUI(true);
+                }).catch(e => {
+                    alert("無法載入此音樂網址，請確保連結格式正確或支援跨網域播放。");
+                });
+                closeMusicModal();
+            }
+        }
+
+        // Mobile Nav Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Contact Form Handling
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const notice = document.getElementById('formNotice');
+            notice.classList.remove('hidden');
+            event.target.reset();
+            setTimeout(() => {
+                notice.classList.add('hidden');
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
