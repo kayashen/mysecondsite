@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily English Master - 每日英語練習</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', '"Noto Sans TC"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        @keyframes pulse-wave {
+            0%, 100% { height: 8px; }
+            50% { height: 24px; }
+        }
+        .animate-wave-1 { animation: pulse-wave 1s infinite 0.1s; }
+        .animate-wave-2 { animation: pulse-wave 1s infinite 0.25s; }
+        .animate-wave-3 { animation: pulse-wave 1s infinite 0.4s; }
+        .animate-wave-4 { animation: pulse-wave 1s infinite 0.15s; }
+    </style>
+</head>
+<body class="h-full flex flex-col text-slate-800 antialiased font-sans">
+    <!-- Top Bar Navigation -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+                    <i class="fa-solid font-bold text-xl fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg sm:text-xl text-slate-900 leading-tight">Daily English Master</h1>
+                    <p class="text-xs text-slate-500 font-medium">每日精選三階金句 ‧ 生字自然發音</p>
+                </div>
+            </div>
+
+            <!-- Date & Actions -->
+            <div class="flex items-center space-x-2 sm:space-x-4">
+                <div id="dateBadge" class="hidden sm:flex items-center text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                    <i class="fa-regular fa-calendar-check mr-2 text-blue-600"></i>
+                    <span id="currentDateText">2026-09-13</span>
+                </div>
+                <button id="apiSettingsBtn" class="flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition border border-slate-200 shadow-sm" title="設定 API Key">
+                    <i class="fa-solid fa-key text-amber-500"></i>
+                    <span>API 設定</span>
+                    <span id="apiKeyStatusDot" class="w-2 h-2 rounded-full bg-amber-400"></span>
+                </button>
+                <button id="aiGeneratorBtn" class="flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs transition border border-indigo-200 shadow-sm">
+                    <i class="fa-solid fa-wand-magic-sparkles text-indigo-600"></i>
+                    <span>AI 實時生成</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 flex flex-col gap-6">
+
+        <!-- Difficulty Selection Tabs -->
+        <div class="bg-white p-2 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="flex items-center w-full sm:w-auto p-1 bg-slate-100 rounded-xl space-x-1" id="levelTabs">
+                <button data-level="easy" class="level-tab flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center space-x-2 bg-white text-emerald-600 shadow-sm">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                    <span>初級 (Easy)</span>
+                </button>
+                <button data-level="medium" class="level-tab flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center space-x-2 text-slate-600 hover:text-slate-900">
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                    <span>中級 (Medium)</span>
+                </button>
+                <button data-level="hard" class="level-tab flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center space-x-2 text-slate-600 hover:text-slate-900">
+                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                    <span>高級 (Hard)</span>
+                </button>
+            </div>
+
+            <!-- Voice Engine Badge & Speech Controls -->
+            <div class="flex items-center space-x-3 w-full sm:w-auto justify-end px-2">
+                <div class="flex items-center space-x-2 text-xs font-medium text-slate-500">
+                    <span>發音引擎:</span>
+                    <select id="voiceEngineSelect" class="bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-slate-700 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <option value="gemini" selected>✨ Gemini AI 超自然語音</option>
+                        <option value="browser">🌐 瀏覽器內建發音</option>
+                    </select>
+                </div>
+                <div class="flex items-center space-x-1 border-l border-slate-200 pl-3">
+                    <button id="speedBtn" class="px-2.5 py-1 text-xs font-bold bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-700 transition" title="語速調節">
+                        1.0x
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Interactive Sentence Card -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 relative overflow-hidden">
+            <!-- Background accent glow -->
+            <div class="absolute -right-16 -top-16 w-56 h-56 bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+            <!-- Card Header info -->
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-2">
+                    <span id="levelBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
+                        初級 Easy
+                    </span>
+                    <span id="topicTag" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+                        日常生活
+                    </span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button id="copyBtn" class="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition text-sm" title="複製句子">
+                        <i class="fa-regular fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sentence Display Area -->
+            <div class="my-6">
+                <!-- English Sentence with Clickable Vocabulary -->
+                <div id="sentenceDisplay" class="text-2xl sm:text-3xl font-bold text-slate-900 leading-relaxed tracking-tight select-none">
+                    <!-- Interactive tokens inserted via JS -->
+                </div>
+                
+                <!-- Phonetic Symbol & Translation -->
+                <div class="mt-4 pt-4 border-t border-slate-100 flex flex-col gap-2">
+                    <div id="phoneticsDisplay" class="text-sm font-medium text-slate-400 font-mono tracking-wide">
+                        / ... /
+                    </div>
+                    <div id="translationDisplay" class="text-base sm:text-lg font-medium text-slate-600">
+                        載入中文翻譯中...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full Sentence Audio Toolbar -->
+            <div class="mt-6 pt-6 border-t border-slate-100 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <button id="playSentenceBtn" class="flex items-center space-x-3 px-6 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-lg shadow-blue-500/25 transition active:scale-95">
+                        <i id="playSentenceIcon" class="fa-solid fa-play text-base"></i>
+                        <span id="playSentenceText">聆聽全句朗讀</span>
+                    </button>
+                    <button id="slowPlayBtn" class="flex items-center space-x-2 px-4 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm transition">
+                        <i class="fa-solid fa-turtle"></i>
+                        <span>慢速朗讀 (0.75x)</span>
+                    </button>
+                </div>
+
+                <!-- Playing Animation Bar -->
+                <div id="audioVisualizer" class="hidden items-center space-x-1 px-4 py-2 bg-blue-50 rounded-xl text-blue-600">
+                    <span class="w-1 bg-blue-600 rounded-full animate-wave-1"></span>
+                    <span class="w-1 bg-blue-600 rounded-full animate-wave-2"></span>
+                    <span class="w-1 bg-blue-600 rounded-full animate-wave-3"></span>
+                    <span class="w-1 bg-blue-600 rounded-full animate-wave-4"></span>
+                    <span class="text-xs font-bold ml-2">發音播放中...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Practice Tabs & Detailed Analysis -->
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+            <!-- Tabs Header -->
+            <div class="flex border-b border-slate-200 bg-slate-50/50">
+                <button data-tab="vocab" class="practice-tab flex-1 py-4 px-4 text-center font-bold text-sm text-blue-600 border-b-2 border-blue-600 transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                    <span>重點生字解析 (<span id="vocabCount">3</span>)</span>
+                </button>
+                <button data-tab="dictation" class="practice-tab flex-1 py-4 px-4 text-center font-bold text-sm text-slate-500 border-b-2 border-transparent hover:text-slate-800 transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <span>聽寫填空測驗</span>
+                </button>
+                <button data-tab="speaking" class="practice-tab flex-1 py-4 px-4 text-center font-bold text-sm text-slate-500 border-b-2 border-transparent hover:text-slate-800 transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-microphone"></i>
+                    <span>口語跟讀評估</span>
+                </button>
+            </div>
+
+            <!-- Tab Content Container -->
+            <div class="p-6 sm:p-8">
+
+                <!-- TAB 1: Key Vocabulary Breakdown -->
+                <div id="tab-vocab" class="tab-panel flex flex-col gap-4">
+                    <div class="text-xs text-slate-400 flex items-center justify-between mb-1">
+                        <span>💡 提示：點擊右側喇叭可單獨聆聽生字精確發音</span>
+                        <span class="text-slate-400">Gemini High-Quality Speech</span>
+                    </div>
+                    <div id="vocabListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Vocabulary Cards rendered via JS -->
+                    </div>
+                </div>
+
+                <!-- TAB 2: Dictation Fill-in-the-Blank Test -->
+                <div id="tab-dictation" class="tab-panel hidden flex flex-col gap-6">
+                    <div class="bg-blue-50/50 p-4 rounded-2xl border border-blue-100 flex items-center justify-between">
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-sm">聽寫挑戰 (Dictation Challenge)</h4>
+                            <p class="text-xs text-slate-500">聆聽語音並在空格中填入正確單字</p>
+                        </div>
+                        <button id="dictationAudioBtn" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold text-xs transition flex items-center space-x-2">
+                            <i class="fa-solid fa-volume-high"></i>
+                            <span>播放題目音檔</span>
+                        </button>
+                    </div>
+
+                    <div id="dictationForm" class="p-6 bg-slate-50 rounded-2xl border border-slate-200">
+                        <!-- Filled dynamically -->
+                    </div>
+
+                    <div class="flex justify-end space-x-3">
+                        <button id="checkDictationBtn" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold text-xs transition">
+                            送出檢查答案
+                        </button>
+                    </div>
+                    <div id="dictationFeedback" class="hidden p-4 rounded-xl text-sm font-semibold"></div>
+                </div>
+
+                <!-- TAB 3: Speaking / Pronunciation Evaluation -->
+                <div id="tab-speaking" class="tab-panel hidden flex flex-col items-center justify-center py-6 text-center gap-6">
+                    <div class="max-w-md w-full flex flex-col items-center">
+                        <div id="micRing" class="w-24 h-24 rounded-full bg-blue-50 border-4 border-blue-100 flex items-center justify-center text-blue-600 text-3xl mb-4 transition">
+                            <i id="micIcon" class="fa-solid fa-microphone"></i>
+                        </div>
+                        <h4 class="font-bold text-lg text-slate-900 mb-1">對著麥克風朗讀全句</h4>
+                        <p class="text-xs text-slate-500 mb-6">點擊下方按鈕開始錄音，測試您的口語發音精準度</p>
+
+                        <button id="recordBtn" class="px-8 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-2xl shadow-lg shadow-red-500/25 transition flex items-center space-x-2">
+                            <i class="fa-solid fa-circle text-xs"></i>
+                            <span id="recordBtnText">開始錄音練習</span>
+                        </button>
+
+                        <div id="speechResult" class="hidden mt-6 w-full p-4 bg-slate-50 rounded-2xl border border-slate-200 text-left">
+                            <div class="text-xs text-slate-400 mb-1">辨識到的內容:</div>
+                            <div id="recognizedText" class="text-sm font-semibold text-slate-800 mb-3">...</div>
+                            <div class="flex items-center justify-between border-t border-slate-200 pt-3">
+                                <span class="text-xs font-bold text-slate-600">匹配發音評分:</span>
+                                <span id="speakingScore" class="text-lg font-extrabold text-blue-600">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal for Dynamic AI Sentence Generation -->
+    <div id="aiModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-200">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full mx-4 shadow-2xl border border-slate-100 transform scale-95 transition-transform duration-200" id="aiModalContent">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-900">AI 實時生成短句</h3>
+                </div>
+                <button id="closeAiModal" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <p class="text-xs text-slate-500 mb-4">請選擇您感興趣的主題，Gemini AI 將為您全新生成「初、中、高」三種難度句子與生字註解：</p>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-2">主題選擇 (Topic)</label>
+                    <div class="grid grid-cols-2 gap-2" id="topicOptions">
+                        <button data-topic="Daily Life" class="topic-btn border border-indigo-600 bg-indigo-50 text-indigo-700 font-bold p-2.5 rounded-xl text-xs text-left">
+                            ☕ 日常生活 (Daily)
+                        </button>
+                        <button data-topic="Business & Workplace" class="topic-btn border border-slate-200 hover:border-slate-300 text-slate-700 font-medium p-2.5 rounded-xl text-xs text-left">
+                            💼 職場商務 (Business)
+                        </button>
+                        <button data-topic="Travel & Culture" class="topic-btn border border-slate-200 hover:border-slate-300 text-slate-700 font-medium p-2.5 rounded-xl text-xs text-left">
+                            ✈️ 旅遊文化 (Travel)
+                        </button>
+                        <button data-topic="Tech & Science" class="topic-btn border border-slate-200 hover:border-slate-300 text-slate-700 font-medium p-2.5 rounded-xl text-xs text-left">
+                            🚀 科技新知 (Tech)
+                        </button>
+                    </div>
+                </div>
+
+                <button id="generateSentencesBtn" class="w-full py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold rounded-xl text-sm shadow-md shadow-indigo-500/20 hover:opacity-95 transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-sparkles"></i>
+                    <span>立即生成三階全新練習句</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for API Key Settings & Encryption -->
+    <div id="apiModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-200">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full mx-4 shadow-2xl border border-slate-100 transform scale-95 transition-transform duration-200" id="apiModalContent">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-900">Gemini API Key 設定</h3>
+                </div>
+                <button id="closeApiModal" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <p class="text-xs text-slate-500 mb-4">
+                請輸入您的 Google Gemini API Key。密鑰將採用 <span class="font-bold text-slate-700">AES-256 加密技術</span> 安全儲存於本機瀏覽器，不會明文上傳至外層伺服器。
+            </p>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">API Key 密鑰</label>
+                    <div class="relative">
+                        <input type="password" id="apiKeyInput" placeholder="AIzaSy..." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 focus:border-blue-500 focus:bg-white focus:outline-none rounded-xl text-xs font-mono pr-10 text-slate-800">
+                        <button type="button" id="toggleKeyVisibility" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs">
+                            <i class="fa-solid fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Encryption Status & Test Result -->
+                <div id="apiTestFeedback" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
+
+                <div class="flex items-center justify-between text-xs text-slate-500 pt-1">
+                    <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline flex items-center space-x-1 font-medium">
+                        <span>取得免費 API Key</span>
+                        <i class="fa-solid fa-up-right-from-square text-[10px]"></i>
+                    </a>
+                    <span id="keyStorageStatus" class="font-semibold text-slate-400">狀態: 未設定</span>
+                </div>
+
+                <div class="flex gap-2 pt-2">
+                    <button id="testApiKeyBtn" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition border border-slate-200 flex items-center justify-center space-x-1.5">
+                        <i class="fa-solid fa-plug"></i>
+                        <span>測試連線</span>
+                    </button>
+                    <button id="saveApiKeyBtn" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow-md shadow-blue-500/20 transition flex items-center justify-center space-x-1.5">
+                        <i class="fa-solid fa-lock"></i>
+                        <span>加密儲存 Key</span>
+                    </button>
+                    <button id="clearApiKeyBtn" class="px-3 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold rounded-xl text-xs transition border border-rose-200" title="清除 key">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl z-50 flex items-center space-x-3 text-xs font-semibold translate-y-20 opacity-0 transition duration-300">
+        <i id="toastIcon" class="fa-solid fa-circle-info text-blue-400"></i>
+        <span id="toastMsg">提示訊息</span>
+    </div>
+
+    <script>
+        // Preset Daily Lessons (Data model for fallback & instant offline loading)
+        const PRESET_LESSONS = {
+            easy: {
+                level: "easy",
+                levelName: "初級 Easy",
+                badgeClass: "bg-emerald-100 text-emerald-700 border-emerald-200",
+                topic: "日常生活",
+                sentence: "Taking a short walk in the fresh air always brightens my mood.",
+                phonetics: "/ ˈteɪ.kɪŋ ə ʃɔːrt wɔːk ɪn ðə freʃ er ˈɔːl.weɪz ˈbraɪ.tənz maɪ muːd /",
+                translation: "在新鮮空氣中散步總能讓我心情變亮起來。",
+                words: [
+                    { word: "brightens", pos: "v.", definition: "使點亮；使心情愉悅", phonetics: "/ˈbraɪ.tənz/", example: "Her smile always brightens the room." },
+                    { word: "mood", pos: "n.", definition: "心情，情緒", phonetics: "/muːd/", example: "He is in a great mood today." },
+                    { word: "fresh", pos: "adj.", definition: "新鮮的，清新的", phonetics: "/freʃ/", example: "I love the smell of fresh coffee." }
+                ]
+            },
+            medium: {
+                level: "medium",
+                levelName: "中級 Medium",
+                badgeClass: "bg-amber-100 text-amber-700 border-amber-200",
+                topic: "自我提升",
+                sentence: "Consistency is essential when attempting to acquire a complex skill efficiently.",
+                phonetics: "/ kənˈsɪs.tən.si ɪz ɪˈsen.ʃəl wen əˈtemp.tɪŋ tuː əˈkwaɪər ə kəmˈpleks skɪl ɪˈfɪʃ.ənt.li /",
+                translation: "當嘗試高效掌握一項複雜技能時，持之以恆是至關重要的。",
+                words: [
+                    { word: "Consistency", pos: "n.", definition: "持續性，一致性", phonetics: "/kənˈsɪs.tən.si/", example: "Consistency is key to success." },
+                    { word: "acquire", pos: "v.", definition: "獲得，學到", phonetics: "/əˈkwaɪər/", example: "It takes time to acquire fluency." },
+                    { word: "efficiently", pos: "adv.", definition: "高效地，有效率地", phonetics: "/ɪˈfɪʃ.ənt.li/", example: "She manages her task list efficiently." }
+                ]
+            },
+            hard: {
+                level: "hard",
+                levelName: "高級 Hard",
+                badgeClass: "bg-rose-100 text-rose-700 border-rose-200",
+                topic: "思想哲理",
+                sentence: "Despite continuous adversity, her remarkable resilience paved the way for unprecedented innovation.",
+                phonetics: "/ dɪˈspaɪt kənˈtɪn.ju.əs ədˈvɜːr.sə.ti, hɜːr rɪˈmɑːrk.ə.bəl rɪˈzɪl.jəns peɪvd ðə weɪ fɔːr ʌnˈpres.ə.den.tɪd ˌɪn.əˈveɪ.ʃən /",
+                translation: "儘管逆境不斷，她卓越的韌性仍為前所未有的創新鋪平了道路。",
+                words: [
+                    { word: "resilience", pos: "n.", definition: "韌性，適應力/恢復力", phonetics: "/rɪˈzɪl.jəns/", example: "Resilience helps people recover from difficulties." },
+                    { word: "unprecedented", pos: "adj.", definition: "史無前例的，前所未有的", phonetics: "/ʌnˈpres.ə.den.tɪd/", example: "The region faced an unprecedented heatwave." },
+                    { word: "adversity", pos: "n.", definition: "逆境，不幸", phonetics: "/ədˈvɜːr.sə.ti/", example: "True friends stay with you in times of adversity." }
+                ]
+            }
+        };
+
+        // Application Global State
+        const AppState = {
+            currentLevel: 'easy',
+            currentData: PRESET_LESSONS,
+            voiceEngine: 'gemini', // 'gemini' or 'browser'
+            playbackSpeed: 1.0,
+            activeAudio: null,
+            isPlaying: false,
+            activeTab: 'vocab',
+            selectedTopic: 'Daily Life'
+        };
+
+        // --- Web Crypto API Encryption Utilities ---
+        const SECRET_SALT = "DailyEnglishMasterKeySalt2026";
+        const LOCAL_STORAGE_KEY = "dem_encrypted_api_key_v1";
+
+        async function getCryptoKey() {
+            const enc = new TextEncoder();
+            const keyMaterial = await window.crypto.subtle.importKey(
+                "raw",
+                enc.encode(SECRET_SALT),
+                { name: "PBKDF2" },
+                false,
+                ["deriveBits", "deriveKey"]
+            );
+            return window.crypto.subtle.deriveKey(
+                {
+                    name: "PBKDF2",
+                    salt: enc.encode("dem_salt_constant"),
+                    iterations: 100000,
+                    hash: "SHA-256"
+                },
+                keyMaterial,
+                { name: "AES-GCM", length: 256 },
+                false,
+                ["encrypt", "decrypt"]
+            );
+        }
+
+        async function encryptApiKey(plaintextKey) {
+            if (!plaintextKey) return "";
+            try {
+                const cryptoKey = await getCryptoKey();
+                const iv = window.crypto.getRandomValues(new Uint8Array(12));
+                const enc = new TextEncoder();
+                const encrypted = await window.crypto.subtle.encrypt(
+                    { name: "AES-GCM", iv: iv },
+                    cryptoKey,
+                    enc.encode(plaintextKey)
+                );
+                
+                // Pack IV and Encrypted data into JSON string base64
+                const payload = {
+                    iv: Array.from(iv),
+                    data: Array.from(new Uint8Array(encrypted))
+                };
+                return btoa(JSON.stringify(payload));
+            } catch (err) {
+                console.error("Encryption error:", err);
+                return "";
+            }
+        }
+
+        async function getDecryptedApiKey() {
+            const cipherText = localStorage.getItem(LOCAL_STORAGE_KEY);
+            if (!cipherText) return "";
+            try {
+                const payload = JSON.parse(atob(cipherText));
+                const cryptoKey = await getCryptoKey();
+                const iv = new Uint8Array(payload.iv);
+                const data = new Uint8Array(payload.data);
+                
+                const decrypted = await window.crypto.subtle.decrypt(
+                    { name: "AES-GCM", iv: iv },
+                    cryptoKey,
+                    data
+                );
+                const dec = new TextDecoder();
+                return dec.decode(decrypted);
+            } catch (err) {
+                console.error("Decryption error:", err);
+                return "";
+            }
+        }
+
+        async function getActiveApiKey() {
+            const storedKey = await getDecryptedApiKey();
+            if (storedKey) return storedKey;
+            // Fallback to default runtime key if populated or empty string
+            return "";
+        }
+
+        function updateApiKeyUIStatus(hasKey) {
+            const dot = document.getElementById('apiKeyStatusDot');
+            const statusText = document.getElementById('keyStorageStatus');
+            if (hasKey) {
+                dot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+                statusText.textContent = "狀態: 🔒 已加密儲存";
+                statusText.className = "font-semibold text-emerald-600";
+            } else {
+                dot.className = "w-2 h-2 rounded-full bg-amber-400";
+                statusText.textContent = "狀態: ⚠️ 未設定 Key";
+                statusText.className = "font-semibold text-amber-500";
+            }
+        }
+
+        /**
+         * Helper to convert Base64 string into ArrayBuffer
+         */
+        function base64ToArrayBuffer(base64) {
+            const binaryString = window.atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        /**
+         * Converts raw signed PCM 16-bit audio into a playable WAV Blob
+         */
+        function pcmToWav(pcm16Data, sampleRate = 24000) {
+            const numChannels = 1;
+            const bitsPerSample = 16;
+            const byteRate = sampleRate * numChannels * (bitsPerSample / 8);
+            const blockAlign = numChannels * (bitsPerSample / 8);
+            const dataSize = pcm16Data.byteLength;
+            const buffer = new ArrayBuffer(44 + dataSize);
+            const view = new DataView(buffer);
+
+            // WAV Header
+            const writeString = (view, offset, str) => {
+                for (let i = 0; i < str.length; i++) {
+                    view.setUint8(offset + i, str.charCodeAt(i));
+                }
+            };
+
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + dataSize, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true); // AudioFormat (1 = PCM)
+            view.setUint16(22, numChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, byteRate, true);
+            view.setUint16(32, blockAlign, true);
+            view.setUint16(34, bitsPerSample, true);
+            writeString(view, 36, 'data');
+            view.setUint32(40, dataSize, true);
+
+            // Write PCM samples
+            const pcmBytes = new Uint8Array(pcm16Data.buffer || pcm16Data);
+            const wavBytes = new Uint8Array(buffer, 44);
+            wavBytes.set(pcmBytes);
+
+            return new Blob([buffer], { type: 'audio/wav' });
+        }
+
+        /**
+         * Generates and plays audio using the Gemini 2.5 Flash TTS API
+         */
+        async function speakWithGemini(text, speed = 1.0) {
+            const apiKey = await getActiveApiKey();
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+
+            const speechInstruction = `Say clearly in a natural, standard American English voice: ${text}`;
+            
+            const payload = {
+                contents: [{
+                    parts: [{ text: speechInstruction }]
+                }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: {
+                        voiceConfig: {
+                            prebuiltVoiceConfig: { voiceName: "Aoede" } // Clear, breezy voice
+                        }
+                    }
+                },
+                model: "gemini-2.5-flash-preview-tts"
+            };
+
+            try {
+                showVisualizer(true);
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`TTS API failed with status ${response.status}`);
+                }
+
+                const result = await response.json();
+                const part = result?.candidates?.[0]?.content?.parts?.[0];
+                const audioData = part?.inlineData?.data;
+                const mimeType = part?.inlineData?.mimeType || "";
+
+                if (audioData) {
+                    let sampleRate = 24000; // Default Gemini TTS sample rate
+                    const match = mimeType.match(/rate=(\d+)/);
+                    if (match && match[1]) {
+                        sampleRate = parseInt(match[1], 10);
+                    }
+
+                    const arrayBuffer = base64ToArrayBuffer(audioData);
+                    const pcm16 = new Int16Array(arrayBuffer);
+                    const wavBlob = pcmToWav(pcm16, sampleRate);
+                    const audioUrl = URL.createObjectURL(wavBlob);
+
+                    playAudioElement(audioUrl, speed);
+                } else {
+                    throw new Error("No audio payload returned from Gemini TTS");
+                }
+            } catch (err) {
+                console.warn("Gemini TTS Error, falling back to Browser SpeechSynthesis:", err);
+                speakWithBrowser(text, speed);
+            }
+        }
+
+        /**
+         * Fallback to Web Speech API
+         */
+        function speakWithBrowser(text, speed = 1.0) {
+            if (!('speechSynthesis' in window)) {
+                showToast("您的瀏覽器不支援語音播放", "error");
+                showVisualizer(false);
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+            showVisualizer(true);
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = speed;
+
+            utterance.onend = () => showVisualizer(false);
+            utterance.onerror = () => showVisualizer(false);
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        /**
+         * Shared audio playback controller
+         */
+        function playAudioElement(url, speed = 1.0) {
+            if (AppState.activeAudio) {
+                AppState.activeAudio.pause();
+                AppState.activeAudio = null;
+            }
+
+            const audio = new Audio(url);
+            audio.playbackRate = speed;
+            AppState.activeAudio = audio;
+
+            audio.onplay = () => showVisualizer(true);
+            audio.onended = () => {
+                showVisualizer(false);
+                AppState.activeAudio = null;
+            };
+            audio.onerror = () => {
+                showVisualizer(false);
+                showToast("語音播放發生錯誤", "error");
+            };
+
+            audio.play().catch(e => console.error("Audio play error:", e));
+        }
+
+        function speakText(text, speed = AppState.playbackSpeed) {
+            if (AppState.voiceEngine === 'gemini') {
+                speakWithGemini(text, speed);
+            } else {
+                speakWithBrowser(text, speed);
+            }
+        }
+
+        function showVisualizer(show) {
+            const visualizer = document.getElementById('audioVisualizer');
+            if (show) {
+                visualizer.classList.remove('hidden');
+                visualizer.classList.add('flex');
+            } else {
+                visualizer.classList.add('hidden');
+                visualizer.classList.remove('flex');
+            }
+        }
+
+        /**
+         * Render active sentence card and dictionary details
+         */
+        function renderCurrentSentence() {
+            const data = AppState.currentData[AppState.currentLevel];
+            if (!data) return;
+
+            // Update Badges
+            const levelBadge = document.getElementById('levelBadge');
+            levelBadge.textContent = data.levelName;
+            levelBadge.className = `px-3 py-1 rounded-full text-xs font-bold border ${data.badgeClass}`;
+
+            document.getElementById('topicTag').textContent = data.topic;
+            document.getElementById('phoneticsDisplay').textContent = data.phonetics;
+            document.getElementById('translationDisplay').textContent = data.translation;
+
+            // Render sentence with clickable words
+            const container = document.getElementById('sentenceDisplay');
+            container.innerHTML = '';
+
+            const wordsList = data.words.map(w => w.word.toLowerCase());
+            // Split by words keeping punctuation
+            const tokens = data.sentence.split(/(\s+|[.,!?;:"])/);
+
+            tokens.forEach(token => {
+                const cleanToken = token.replace(/[^a-zA-Z]/g, '').toLowerCase();
+                const matchedVocab = data.words.find(w => w.word.toLowerCase() === cleanToken);
+
+                if (matchedVocab) {
+                    const wordSpan = document.createElement('span');
+                    wordSpan.className = 'inline-block text-blue-600 font-extrabold cursor-pointer border-b-2 border-blue-400 border-dashed hover:bg-blue-50 hover:text-blue-700 px-1 rounded transition';
+                    wordSpan.textContent = token;
+                    wordSpan.title = `點擊發音: ${matchedVocab.word} (${matchedVocab.pos} ${matchedVocab.definition})`;
+                    wordSpan.onclick = (e) => {
+                        e.stopPropagation();
+                        speakText(cleanToken);
+                        showToast(`生字朗讀: ${matchedVocab.word} ${matchedVocab.phonetics}`);
+                    };
+                    container.appendChild(wordSpan);
+                } else {
+                    const textNode = document.createTextNode(token);
+                    container.appendChild(textNode);
+                }
+            });
+
+            // Render Key Vocab Cards
+            renderVocabCards(data.words);
+            renderDictationTab(data);
+            resetSpeakingTab();
+        }
+
+        function renderVocabCards(words) {
+            const container = document.getElementById('vocabListContainer');
+            document.getElementById('vocabCount').textContent = words.length;
+            container.innerHTML = '';
+
+            words.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'p-4 bg-slate-50 hover:bg-slate-100/80 rounded-2xl border border-slate-200 transition flex items-start justify-between group';
+                card.innerHTML = `
+                    <div class="flex-1 pr-3">
+                        <div class="flex items-center space-x-2 mb-1">
+                            <span class="font-bold text-slate-900 text-base">${item.word}</span>
+                            <span class="text-xs font-semibold px-2 py-0.5 bg-blue-100 text-blue-700 rounded-md">${item.pos}</span>
+                            <span class="text-xs font-mono text-slate-400">${item.phonetics}</span>
+                        </div>
+                        <div class="text-xs font-semibold text-slate-700 mb-2">${item.definition}</div>
+                        <div class="text-xs text-slate-500 italic bg-white p-2 rounded-xl border border-slate-200/60">
+                            "${item.example}"
+                        </div>
+                    </div>
+                    <button class="vocab-audio-btn p-3 rounded-xl bg-white group-hover:bg-blue-600 text-slate-400 group-hover:text-white shadow-sm transition" title="收聽生字發音">
+                        <i class="fa-solid fa-volume-high text-sm"></i>
+                    </button>
+                `;
+
+                card.querySelector('.vocab-audio-btn').onclick = () => {
+                    speakText(item.word);
+                    showToast(`正在發音: ${item.word}`);
+                };
+
+                container.appendChild(card);
+            });
+        }
+
+        function renderDictationTab(data) {
+            const container = document.getElementById('dictationForm');
+            const targetWords = data.words.map(w => w.word.toLowerCase());
+            
+            const words = data.sentence.split(' ');
+            let html = '<div class="flex flex-wrap items-center gap-2 text-base font-medium text-slate-800 leading-loose">';
+            
+            words.forEach((w, idx) => {
+                const clean = w.replace(/[^a-zA-Z]/g, '').toLowerCase();
+                const matched = data.words.find(item => item.word.toLowerCase() === clean);
+
+                if (matched) {
+                    html += `
+                        <input type="text" data-answer="${clean}" class="dictation-input w-28 px-2 py-1 bg-white border-2 border-slate-300 focus:border-blue-500 focus:outline-none rounded-xl text-center font-bold text-blue-600 text-sm shadow-inner" placeholder="(${matched.pos})">
+                    `;
+                } else {
+                    html += `<span>${w}</span>`;
+                }
+            });
+            html += '</div>';
+
+            container.innerHTML = html;
+            document.getElementById('dictationFeedback').className = 'hidden p-4 rounded-xl text-sm font-semibold';
+        }
+
+        function resetSpeakingTab() {
+            document.getElementById('speechResult').classList.add('hidden');
+            document.getElementById('recognizedText').textContent = '...';
+            document.getElementById('speakingScore').textContent = '0%';
+        }
+
+        async function generateAiDailySentences(topic) {
+            const generateBtn = document.getElementById('generateSentencesBtn');
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Gemini 正在思考生成中...`;
+
+            const userPrompt = `Generate a JSON object containing English daily practice sentences for 3 difficulty levels (easy, medium, hard) on the topic: "${topic}". Return JSON matching schema:
+{
+  "easy": {
+    "level": "easy",
+    "levelName": "初級 Easy",
+    "badgeClass": "bg-emerald-100 text-emerald-700 border-emerald-200",
+    "topic": "${topic}",
+    "sentence": "English sentence",
+    "phonetics": "/ IPA phonetics /",
+    "translation": "中文翻譯",
+    "words": [
+      { "word": "vocab", "pos": "n./v.", "definition": "中文解釋", "phonetics": "/IPA/", "example": "Example sentence." }
+    ]
+  },
+  "medium": { ... },
+  "hard": { ... }
+}`;
+
+            const apiKey = await getActiveApiKey();
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                generationConfig: {
+                    responseMimeType: "application/json"
+                }
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error("API call failed");
+
+                const result = await response.json();
+                const jsonText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (jsonText) {
+                    const data = JSON.parse(jsonText);
+                    AppState.currentData = data;
+                    renderCurrentSentence();
+                    closeModal();
+                    showToast("全新 AI 三階短句已生成！", "success");
+                }
+            } catch (err) {
+                console.error("Failed to generate custom AI sentences:", err);
+                showToast("生成失敗，請確認 API Key 是否設定正確", "error");
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = `<i class="fa-solid fa-sparkles"></i> <span>領域生成三階全新練習句</span>`;
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+            if (!toast || !toastMsg) return;
+
+            toastMsg.textContent = message;
+            if (type === 'error') {
+                toastIcon.className = 'fa-solid fa-triangle-exclamation text-rose-400';
+            } else if (type === 'success') {
+                toastIcon.className = 'fa-solid fa-circle-check text-emerald-400';
+            } else {
+                toastIcon.className = 'fa-solid fa-circle-info text-blue-400';
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function openModal() {
+            const modal = document.getElementById('aiModal');
+            const content = document.getElementById('aiModalContent');
+            if (modal && content) {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                content.classList.remove('scale-95');
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('aiModal');
+            const content = document.getElementById('aiModalContent');
+            if (modal && content) {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                content.classList.add('scale-95');
+            }
+        }
+
+        function closeApiModal() {
+            const modal = document.getElementById('apiModal');
+            const content = document.getElementById('apiModalContent');
+            if (modal && content) {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                content.classList.add('scale-95');
+            }
+        }
+
+        function openApiModal() {
+            const modal = document.getElementById('apiModal');
+            const content = document.getElementById('apiModalContent');
+            if (modal && content) {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                content.classList.remove('scale-95');
+            }
+
+            getDecryptedApiKey().then(key => {
+                const keyInput = document.getElementById('apiKeyInput');
+                if (keyInput) keyInput.value = key;
+                updateApiKeyUIStatus(!!key);
+            });
+        }
+
+        function setupSpeechRecognition() {
+            const recordBtn = document.getElementById('recordBtn');
+            const recordBtnText = document.getElementById('recordBtnText');
+            const micRing = document.getElementById('micRing');
+            const speechResult = document.getElementById('speechResult');
+            const recognizedText = document.getElementById('recognizedText');
+            const speakingScore = document.getElementById('speakingScore');
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                if (recordBtn) {
+                    recordBtn.onclick = () => {
+                        showToast("您的瀏覽器不支援語音辨識 (Speech Recognition)", "error");
+                    };
+                }
+                return;
+            }
+
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            let isRecording = false;
+
+            if (recordBtn) {
+                recordBtn.onclick = () => {
+                    if (isRecording) {
+                        recognition.stop();
+                    } else {
+                        try {
+                            recognition.start();
+                        } catch (e) {
+                            console.error("Speech recognition start error:", e);
+                        }
+                    }
+                };
+            }
+
+            recognition.onstart = () => {
+                isRecording = true;
+                if (recordBtnText) recordBtnText.textContent = "錄音中... 點擊結束";
+                if (micRing) micRing.classList.add('animate-pulse', 'border-red-400', 'bg-red-50');
+            };
+
+            recognition.onend = () => {
+                isRecording = false;
+                if (recordBtnText) recordBtnText.textContent = "開始錄音練習";
+                if (micRing) micRing.classList.remove('animate-pulse', 'border-red-400', 'bg-red-50');
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                if (recognizedText) recognizedText.textContent = `"${transcript}"`;
+                if (speechResult) speechResult.classList.remove('hidden');
+
+                const targetSentence = AppState.currentData[AppState.currentLevel].sentence;
+                const score = calculateSimilarity(transcript, targetSentence);
+                if (speakingScore) {
+                    speakingScore.textContent = `${score}%`;
+                    if (score > 80) {
+                        speakingScore.className = "text-lg font-extrabold text-emerald-600";
+                    } else if (score > 50) {
+                        speakingScore.className = "text-lg font-extrabold text-amber-600";
+                    } else {
+                        speakingScore.className = "text-lg font-extrabold text-rose-600";
+                    }
+                }
+            };
+        }
+
+        function calculateSimilarity(str1, str2) {
+            const clean1 = str1.toLowerCase().replace(/[^a-z0-9 ]/g, '').split(/\s+/).filter(Boolean);
+            const clean2 = str2.toLowerCase().replace(/[^a-z0-9 ]/g, '').split(/\s+/).filter(Boolean);
+            
+            if (clean1.length === 0 || clean2.length === 0) return 0;
+
+            let matches = 0;
+            clean1.forEach(w => {
+                if (clean2.includes(w)) matches++;
+            });
+
+            const ratio = Math.round((matches / Math.max(clean1.length, clean2.length)) * 100);
+            return isNaN(ratio) ? 0 : Math.min(100, ratio);
+        }
+
+        // Initialize event handlers on page load
+        window.onload = function() {
+            // Display Today's Date
+            const today = new Date();
+            const dateStr = today.toISOString().split('T')[0];
+            document.getElementById('currentDateText').textContent = dateStr;
+
+            // Initialize API Key Status Check
+            getDecryptedApiKey().then(key => updateApiKeyUIStatus(!!key));
+
+            // API Settings Modal Handlers
+            document.getElementById('apiSettingsBtn').onclick = openApiModal;
+            document.getElementById('closeApiModal').onclick = closeApiModal;
+
+            // Toggle Key Visibility
+            const apiKeyInput = document.getElementById('apiKeyInput');
+            const toggleKeyBtn = document.getElementById('toggleKeyVisibility');
+            const eyeIcon = document.getElementById('eyeIcon');
+            toggleKeyBtn.onclick = () => {
+                if (apiKeyInput.type === 'password') {
+                    apiKeyInput.type = 'text';
+                    eyeIcon.className = 'fa-solid fa-eye-slash';
+                } else {
+                    apiKeyInput.type = 'password';
+                    eyeIcon.className = 'fa-solid fa-eye';
+                }
+            };
+
+            // Save Encrypted API Key
+            document.getElementById('saveApiKeyBtn').onclick = async () => {
+                const rawKey = apiKeyInput.value.trim();
+                if (!rawKey) {
+                    showToast("請輸入有效的 API Key", "error");
+                    return;
+                }
+                const encrypted = await encryptApiKey(rawKey);
+                if (encrypted) {
+                    localStorage.setItem(LOCAL_STORAGE_KEY, encrypted);
+                    updateApiKeyUIStatus(true);
+                    showToast("API Key 已成功加密儲存！", "success");
+                    closeApiModal();
+                } else {
+                    showToast("加密儲存失敗", "error");
+                }
+            };
+
+            // Clear Saved Key
+            document.getElementById('clearApiKeyBtn').onclick = () => {
+                localStorage.removeItem(LOCAL_STORAGE_KEY);
+                apiKeyInput.value = '';
+                updateApiKeyUIStatus(false);
+                const feedback = document.getElementById('apiTestFeedback');
+                feedback.className = 'hidden';
+                showToast("已清除儲存的 API Key");
+            };
+
+            // Test Connection
+            document.getElementById('testApiKeyBtn').onclick = async () => {
+                const rawKey = apiKeyInput.value.trim() || await getDecryptedApiKey();
+                const feedback = document.getElementById('apiTestFeedback');
+                feedback.className = 'p-3 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 block';
+                feedback.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> 正在連線測試 Gemini API...';
+
+                if (!rawKey) {
+                    feedback.className = 'p-3 rounded-xl text-xs font-semibold bg-rose-100 text-rose-700 block';
+                    feedback.textContent = '❌ 請先輸入 API Key 再進行連線測試';
+                    return;
+                }
+
+                try {
+                    const testUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${rawKey}`;
+                    const res = await fetch(testUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: "Hello" }] }] })
+                    });
+                    if (res.ok) {
+                        feedback.className = 'p-3 rounded-xl text-xs font-semibold bg-emerald-100 text-emerald-800 block';
+                        feedback.innerHTML = '✅ 連線成功！API Key 驗證有效。';
+                    } else {
+                        const errData = await res.json();
+                        feedback.className = 'p-3 rounded-xl text-xs font-semibold bg-rose-100 text-rose-800 block';
+                        feedback.innerHTML = `❌ 連線失敗 (${res.status}): ${errData?.error?.message || 'Key 無效'}`;
+                    }
+                } catch (e) {
+                    feedback.className = 'p-3 rounded-xl text-xs font-semibold bg-rose-100 text-rose-800 block';
+                    feedback.innerHTML = `❌ 網路連線錯誤: ${e.message}`;
+                }
+            };
+
+            // Level Tabs Switcher
+            document.querySelectorAll('.level-tab').forEach(tab => {
+                tab.onclick = () => {
+                    const level = tab.dataset.level;
+                    AppState.currentLevel = level;
+
+                    document.querySelectorAll('.level-tab').forEach(t => {
+                        t.className = 'level-tab flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center space-x-2 text-slate-600 hover:text-slate-900';
+                    });
+
+                    if (level === 'easy') tab.className = 'level-tab flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center space-x-2 bg-white text-emerald-600 shadow-sm';
+                    else if (level === 'medium') tab.className = 'level-tab flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center space-x-2 bg-white text-amber-600 shadow-sm';
+                    else tab.className = 'level-tab flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center space-x-2 bg-white text-rose-600 shadow-sm';
+
+                    renderCurrentSentence();
+                };
+            });
+
+            // Practice Section Tabs Switcher
+            document.querySelectorAll('.practice-tab').forEach(tab => {
+                tab.onclick = () => {
+                    const tabName = tab.dataset.tab;
+                    AppState.activeTab = tabName;
+
+                    document.querySelectorAll('.practice-tab').forEach(t => {
+                        t.className = 'practice-tab flex-1 py-4 px-4 text-center font-bold text-sm text-slate-500 border-b-2 border-transparent hover:text-slate-800 transition flex items-center justify-center space-x-2';
+                    });
+                    tab.className = 'practice-tab flex-1 py-4 px-4 text-center font-bold text-sm text-blue-600 border-b-2 border-blue-600 transition flex items-center justify-center space-x-2';
+
+                    document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+                    document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+                };
+            });
+
+            // Engine & Speed selector
+            document.getElementById('voiceEngineSelect').onchange = (e) => {
+                AppState.voiceEngine = e.target.value;
+                showToast(`已切換發音引擎: ${e.target.value === 'gemini' ? 'Gemini AI 超自然語音' : '瀏覽器內建發音'}`);
+            };
+
+            const speedBtn = document.getElementById('speedBtn');
+            speedBtn.onclick = () => {
+                if (AppState.playbackSpeed === 1.0) AppState.playbackSpeed = 0.75;
+                else if (AppState.playbackSpeed === 0.75) AppState.playbackSpeed = 1.25;
+                else AppState.playbackSpeed = 1.0;
+                speedBtn.textContent = `${AppState.playbackSpeed}x`;
+            };
+
+            // Play Sentence Controls
+            document.getElementById('playSentenceBtn').onclick = () => {
+                const sentence = AppState.currentData[AppState.currentLevel].sentence;
+                speakText(sentence, AppState.playbackSpeed);
+            };
+
+            document.getElementById('slowPlayBtn').onclick = () => {
+                const sentence = AppState.currentData[AppState.currentLevel].sentence;
+                speakText(sentence, 0.75);
+            };
+
+            // Copy Sentence
+            document.getElementById('copyBtn').onclick = () => {
+                const sentence = AppState.currentData[AppState.currentLevel].sentence;
+                document.execCommand('copy');
+                showToast("已複製短句至剪貼簿", "success");
+            };
+
+            // Dictation Check
+            document.getElementById('checkDictationBtn').onclick = () => {
+                const inputs = document.querySelectorAll('.dictation-input');
+                let allCorrect = true;
+
+                inputs.forEach(input => {
+                    const userVal = input.value.trim().toLowerCase();
+                    const correctVal = input.dataset.answer.toLowerCase();
+
+                    if (userVal === correctVal) {
+                        input.className = "dictation-input w-28 px-2 py-1 bg-emerald-50 border-2 border-emerald-500 text-emerald-700 font-bold rounded-xl text-center text-sm";
+                    } else {
+                        input.className = "dictation-input w-28 px-2 py-1 bg-rose-50 border-2 border-rose-500 text-rose-700 font-bold rounded-xl text-center text-sm";
+                        allCorrect = false;
+                    }
+                });
+
+                const feedback = document.getElementById('dictationFeedback');
+                feedback.classList.remove('hidden');
+                if (allCorrect) {
+                    feedback.className = 'p-4 rounded-xl text-sm font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200';
+                    feedback.textContent = '🎉 太棒了！所有的單字聽寫完全正確！';
+                } else {
+                    feedback.className = 'p-4 rounded-xl text-sm font-semibold bg-rose-100 text-rose-800 border border-rose-200';
+                    feedback.textContent = '❌ 有部分單字填寫錯誤，請再聽一次音檔確認哦！';
+                }
+            };
+
+            document.getElementById('dictationAudioBtn').onclick = () => {
+                const sentence = AppState.currentData[AppState.currentLevel].sentence;
+                speakText(sentence, 0.85);
+            };
+
+            // AI Modal Controls
+            document.getElementById('aiGeneratorBtn').onclick = openModal;
+            document.getElementById('closeAiModal').onclick = closeModal;
+
+            document.querySelectorAll('.topic-btn').forEach(btn => {
+                btn.onclick = () => {
+                    document.querySelectorAll('.topic-btn').forEach(b => {
+                        b.className = 'topic-btn border border-slate-200 hover:border-slate-300 text-slate-700 font-medium p-2.5 rounded-xl text-xs text-left';
+                    });
+                    btn.className = 'topic-btn border border-indigo-600 bg-indigo-50 text-indigo-700 font-bold p-2.5 rounded-xl text-xs text-left';
+                    AppState.selectedTopic = btn.dataset.topic;
+                };
+            });
+
+            document.getElementById('generateSentencesBtn').onclick = () => {
+                generateAiDailySentences(AppState.selectedTopic);
+            };
+
+            // Setup speech recognition for mouth practice
+            setupSpeechRecognition();
+
+            // Initial render
+            renderCurrentSentence();
+        };
+    </script>
+</body>
+</html>
